@@ -24,7 +24,16 @@ public class DiameterHyperLogLog {
     ImmutableGraph G = ImmutableGraph.loadMapped("data/"+basename+"/"+basename);
     HyperBall hyperball = new HyperBall(G, (int) (Math.log(k_value)/Math.log(2)), 0);
     hyperball.init();
-    hyperball.run(maxIter);
+
+    for (int i = 1; i <= maxIter; i++) {
+      hyperball.iterate();
+      int modified = hyperball.modified();
+      System.out.println("iteraton " + i + ": number of counters modified " + modified);
+      if (modified == 0) {
+        break;
+      }
+    }
+
     double effectiveD = NeighbourhoodFunction.effectiveDiameter(.9, hyperball.neighbourhoodFunction.toDoubleArray());
     hyperball.close();
 
